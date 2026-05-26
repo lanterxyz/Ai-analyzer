@@ -27,107 +27,54 @@ jobs:
             artifact: linux
 
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 45
+    timeout-minutes: 60
 
     permissions:
       contents: write
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Install Node.js 20
-        shell: bash
-        run: |
-          if [ "$RUNNER_OS" = "Windows" ]; then
-            choco install nvm -y || true
-            export NVM_HOME="$PROGRAMFILES/nvm"
-            export PATH="$NVM_HOME:$PATH"
-            nvm install 20
-            nvm use 20
-          elif [ "$RUNNER_OS" = "macOS" ]; then
-            brew install node@20 || brew link --overwrite node@20 || true
-            export PATH="/usr/local/opt/node@20/bin:$PATH"
-          else
-            curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
-            sudo apt-get install -y nodejs
-          fi
-          node --version
-          npm --version
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@v4
         with:
           version: 9
 
-      - name: Install dependencies
-        run: pnpm install
-        continue-on-error: false
+      - name: Use runner Node.js
+        shell: bash
+        run: echo "Runner Node: $(node --version), pnpm: $(pnpm --version)"
 
-      - name: Build application
-        run: pnpm build
-        env:
-          NODE_ENV: production
-
-      - name: Install Linux dependencies
+      - name: Install Linux native deps
         if: matrix.platform == 'linux'
         run: |
           sudo apt-get update
           sudo apt-get install -y libx11-dev libxext-dev libxrender-dev libxtst-dev libasound2 libatk1.0-0 libcairo2 libcups2 libdbus-1-3 libexpat1 libfontconfig1 libgdk-pixbuf2.0-0 libglib2.0-0 libgtk-3-0 libnspr4 libpango-1.0-0 libpangocairo-1.0-0 libstdc++6 libx11-xcb1 libxcomposite1 libxcursor1 libxdamage1 libxfixes3 libxi6 libxrandr2 libxrender1 libxss1 libxtst6 fonts-liberation
 
-      - name: Package Windows
-        if: matrix.platform == 'win'
-        run: pnpm build:win
+      - name: Install deps
+        run: pnpm install --no-frozen-lockfile
+
+      - name: Build app
+        run: pnpm build
+
+      - name: Package
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NODE_OPTIONS: --max-old-space-size=4096
+        run: |
+          case "${{ matrix.platform }}" in
+            win)   pnpm build:win ;;
+            mac)   pnpm build:mac ;;
+            linux) pnpm build:linux ;;
+          esac
 
-      - name: Package macOS
-        if: matrix.platform == 'mac'
-        run: pnpm build:mac
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NODE_OPTIONS: --max-old-space-size=4096
-
-      - name: Package Linux
-        if: matrix.platform == 'linux'
-        run: pnpm build:linux
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NODE_OPTIONS: --max-old-space-size=4096
-
-      - name: List dist files
+      - name: Show output
         shell: bash
-        run: ls -la dist/ 2>/dev/null || echo "No dist directory"
+        run: find dist -type f -not -path "dist/win-unpacked/*" -not -path "dist/mac*/" -not -path "dist/linux-unpacked/*" 2>/dev/null | sort
 
-      - name: Upload Windows artifacts
-        if: matrix.platform == 'win'
-        uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.artifact }}
           path: |
             dist/*.exe
-            dist/*.blockmap
-            dist/latest*.yml
-          retention-days: 30
-
-      - name: Upload macOS artifacts
-        if: matrix.platform == 'mac'
-        uses: actions/upload-artifact@v4
-        with:
-          name: ${{ matrix.artifact }}
-          path: |
             dist/*.dmg
-            dist/*.blockmap
-            dist/latest*.yml
-          retention-days: 30
-
-      - name: Upload Linux artifacts
-        if: matrix.platform == 'linux'
-        uses: actions/upload-artifact@v4
-        with:
-          name: ${{ matrix.artifact }}
-          path: |
             dist/*.AppImage
             dist/*.deb
             dist/latest*.yml
@@ -138,42 +85,20 @@ jobs:
     runs-on: ubuntu-latest
     if: startsWith(github.ref, 'refs/tags/v')
     timeout-minutes: 10
-
     permissions:
       contents: write
-
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Download all artifacts
-        uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v4
         with:
           path: artifacts
 
-      - name: List artifacts
-        run: find artifacts -type f | head -30
+      - run: find artifacts -type f | sort
 
-      - name: Create Release
-        uses: softprops/action-gh-release@v2
+      - uses: softprops/action-gh-release@v2
         with:
           name: Ai-analyzer ${{ github.ref_name }}
-          body: |
-            ## Ai-analyzer ${{ github.ref_name }}
-
-            ### Downloads
-            - **Windows**: `Ai-analyzer-${{ github.ref_name }}-Setup.exe` (Installer) | `Ai-analyzer-${{ github.ref_name }}-Portable.exe` (Portable)
-            - **macOS**: `Ai-analyzer-${{ github.ref_name }}-x64.dmg` (Intel) | `Ai-analyzer-${{ github.ref_name }}-arm64.dmg` (Apple Silicon)
-            - **Linux**: `Ai-analyzer-${{ github.ref_name }}-x64.AppImage` | `Ai-analyzer-${{ github.ref_name }}-x64.deb`
-
-            ### What's New
-            See commit history for changes in this release.
-
           draft: false
           prerelease: false
-          files: |
-            artifacts/win/*
-            artifacts/mac/*
-            artifacts/linux/*
+          files: artifacts/**/*
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

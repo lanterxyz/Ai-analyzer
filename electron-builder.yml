@@ -24,25 +24,19 @@ win:
       arch:
         - x64
   icon: resources/icon.ico
-  ArtifactName: "${productName}-${version}-Setup.${ext}"
 
 # NSIS installer configuration
 nsis:
   oneClick: false
   allowToChangeInstallationDirectory: true
   allowElevation: true
-  installerIcon: resources/icon.ico
-  uninstallerIcon: resources/icon.ico
-  installerHeaderIcon: resources/icon.ico
   createDesktopShortcut: true
   createStartMenuShortcut: true
   shortcutName: Ai-analyzer
-  include: resources/installer.nsh
-  ArtifactName: "${productName}-${version}-Setup.${ext}"
 
 # Portable configuration
 portable:
-  ArtifactName: "${productName}-${version}-Portable.${ext}"
+  artifactName: "${productName}-${version}-Portable.${ext}"
 
 # macOS configuration
 mac:
@@ -55,18 +49,6 @@ mac:
   category: public.app-category.developer-tools
   hardenedRuntime: true
   gatekeeperAssess: false
-  ArtifactName: "${productName}-${version}-${arch}.${ext}"
-
-# DMG configuration
-dmg:
-  background: resources/dmg-background.png
-  contents:
-    - x: 130
-      y: 220
-    - x: 410
-      y: 220
-      type: link
-      path: /Applications
 
 # Linux configuration
 linux:
@@ -81,7 +63,6 @@ linux:
   category: Development
   maintainer: Ai-analyzer
   vendor: Ai-analyzer
-  ArtifactName: "${productName}-${version}-${arch}.${ext}"
 
 # Auto-update configuration (publish to GitHub Releases)
 publish:
