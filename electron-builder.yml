@@ -1,0 +1,22 @@
+appId: com.ai-analyzer.app
+productName: Ai-analyzer
+directories:
+  buildResources: resources
+files:
+  - out/**/*
+  - "!out/renderer/**/*"
+extraResources:
+  - from: out/renderer
+    to: renderer
+win:
+  target: nsis
+  icon: resources/icon.ico
+mac:
+  target: dmg
+  icon: resources/icon.png
+linux:
+  target: AppImage
+  icon: resources/icon.png
+nsis:
+  oneClick: false
+  allowToChangeInstallationDirectory: true

@@ -1,0 +1,58 @@
+{
+  "name": "ai-analyzer",
+  "version": "1.0.0",
+  "description": "Packet capture AI analysis software with embedded browser and MITM proxy",
+  "main": "./out/main/index.js",
+  "author": "Ai-analyzer",
+  "license": "MIT",
+  "scripts": {
+    "dev": "electron-vite dev",
+    "build": "electron-vite build",
+    "preview": "electron-vite preview",
+    "postinstall": "electron-builder install-app-deps",
+    "build:unpack": "pnpm build && electron-builder --dir",
+    "build:win": "pnpm build && electron-builder --win",
+    "build:mac": "pnpm build && electron-builder --mac",
+    "build:linux": "pnpm build && electron-builder --linux",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": ["better-sqlite3", "electron", "esbuild"]
+  },
+  "dependencies": {
+    "@ant-design/icons": "^5.6.1",
+    "@modelcontextprotocol/sdk": "^1.29.0",
+    "@vscode/sudo-prompt": "^9.3.2",
+    "better-sqlite3": "^11.8.1",
+    "electron-log": "^5.4.3",
+    "electron-updater": "^6.8.3",
+    "html-entities": "^2.5.2",
+    "node-forge": "^1.4.0",
+    "qrcode": "^1.5.4",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-markdown": "^9.0.3",
+    "react-window": "^2.2.7",
+    "rehype-highlight": "^7.0.2",
+    "remark-gfm": "^4.0.0",
+    "socks": "^2.8.7",
+    "uuid": "^11.1.0",
+    "zod": "^3.23.8",
+    "zstd-codec": "^0.1.4"
+  },
+  "devDependencies": {
+    "@types/better-sqlite3": "^7.6.12",
+    "@types/node-forge": "^1.3.14",
+    "@types/qrcode": "^1.5.5",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "@types/uuid": "^10.0.0",
+    "@vitejs/plugin-react": "^4.3.4",
+    "electron": "^35.0.0",
+    "electron-builder": "^25.1.8",
+    "electron-vite": "^5.0.0",
+    "typescript": "^5.7.0",
+    "vitest": "^3.0.0"
+  }
+}

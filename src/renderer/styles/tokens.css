@@ -1,0 +1,39 @@
+/* Design Tokens - CSS Custom Properties */
+:root {
+  /* Light theme (default) */
+  --bg-primary: #ffffff;
+  --bg-secondary: #f5f5f5;
+  --bg-titlebar: #f0f0f0;
+  --bg-hover: #e8e8e8;
+  --bg-active: #e1f0ff;
+  --bg-input: #ffffff;
+  --bg-code: #f8f8f8;
+
+  --text-primary: #1f1f1f;
+  --text-secondary: #666666;
+
+  --border-color: #e0e0e0;
+  --accent-color: #1677ff;
+
+  --scrollbar-thumb: #c0c0c0;
+  --scrollbar-thumb-hover: #999999;
+}
+
+[data-theme="dark"] {
+  --bg-primary: #1a1a2e;
+  --bg-secondary: #16213e;
+  --bg-titlebar: #0f3460;
+  --bg-hover: #1e3a5f;
+  --bg-active: #1a3a5c;
+  --bg-input: #1a1a2e;
+  --bg-code: #0a0a1a;
+
+  --text-primary: #e0e0e0;
+  --text-secondary: #8c8c8c;
+
+  --border-color: #2a2a4a;
+  --accent-color: #4dabf7;
+
+  --scrollbar-thumb: #3a3a5a;
+  --scrollbar-thumb-hover: #4a4a6a;
+}
