@@ -1,22 +1,90 @@
 appId: com.ai-analyzer.app
 productName: Ai-analyzer
+copyright: Copyright © 2025 Ai-analyzer
+
 directories:
   buildResources: resources
+  output: dist
+
 files:
   - out/**/*
   - "!out/renderer/**/*"
+
 extraResources:
   - from: out/renderer
     to: renderer
+
+# Windows configuration
 win:
-  target: nsis
+  target:
+    - target: nsis
+      arch:
+        - x64
+    - target: portable
+      arch:
+        - x64
   icon: resources/icon.ico
-mac:
-  target: dmg
-  icon: resources/icon.png
-linux:
-  target: AppImage
-  icon: resources/icon.png
+  ArtifactName: "${productName}-${version}-Setup.${ext}"
+
+# NSIS installer configuration
 nsis:
   oneClick: false
   allowToChangeInstallationDirectory: true
+  allowElevation: true
+  installerIcon: resources/icon.ico
+  uninstallerIcon: resources/icon.ico
+  installerHeaderIcon: resources/icon.ico
+  createDesktopShortcut: true
+  createStartMenuShortcut: true
+  shortcutName: Ai-analyzer
+  include: resources/installer.nsh
+  ArtifactName: "${productName}-${version}-Setup.${ext}"
+
+# Portable configuration
+portable:
+  ArtifactName: "${productName}-${version}-Portable.${ext}"
+
+# macOS configuration
+mac:
+  target:
+    - target: dmg
+      arch:
+        - x64
+        - arm64
+  icon: resources/icon.png
+  category: public.app-category.developer-tools
+  hardenedRuntime: true
+  gatekeeperAssess: false
+  ArtifactName: "${productName}-${version}-${arch}.${ext}"
+
+# DMG configuration
+dmg:
+  background: resources/dmg-background.png
+  contents:
+    - x: 130
+      y: 220
+    - x: 410
+      y: 220
+      type: link
+      path: /Applications
+
+# Linux configuration
+linux:
+  target:
+    - target: AppImage
+      arch:
+        - x64
+    - target: deb
+      arch:
+        - x64
+  icon: resources/icon.png
+  category: Development
+  maintainer: Ai-analyzer
+  vendor: Ai-analyzer
+  ArtifactName: "${productName}-${version}-${arch}.${ext}"
+
+# Auto-update configuration (publish to GitHub Releases)
+publish:
+  provider: github
+  owner: lanterxyz
+  repo: Ai-analyzer

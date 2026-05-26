@@ -10,3 +10,14 @@ dist/
 *.key
 .env
 .env.*
+.DS_Store
+Thumbs.db
+*.log
+*.tgz
+*.exe
+*.dmg
+*.AppImage
+*.snap
+*.deb
+*.rpm
+.pnpm-store/

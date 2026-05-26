@@ -5,6 +5,14 @@
   "main": "./out/main/index.js",
   "author": "Ai-analyzer",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lanterxyz/Ai-analyzer.git"
+  },
+  "bugs": {
+    "url": "https://github.com/lanterxyz/Ai-analyzer/issues"
+  },
+  "homepage": "https://github.com/lanterxyz/Ai-analyzer#readme",
   "scripts": {
     "dev": "electron-vite dev",
     "build": "electron-vite build",
@@ -14,6 +22,9 @@
     "build:win": "pnpm build && electron-builder --win",
     "build:mac": "pnpm build && electron-builder --mac",
     "build:linux": "pnpm build && electron-builder --linux",
+    "release": "pnpm build && electron-builder --win --publish always",
+    "release:mac": "pnpm build && electron-builder --mac --publish always",
+    "release:linux": "pnpm build && electron-builder --linux --publish always",
     "test": "vitest run",
     "test:watch": "vitest"
   },
