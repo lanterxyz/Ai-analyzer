@@ -453,7 +453,7 @@ class DefaultAiAnalyzer implements AiAnalyzerLike {
       if (signal) {
         signal.addEventListener('abort', () => {
           req.destroy()
-          reject(new DOMException('Analysis cancelled', 'AbortError'))
+          reject(Object.assign(new Error('Analysis cancelled'), { name: 'AbortError' }))
         })
       }
 

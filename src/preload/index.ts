@@ -6,6 +6,8 @@
 import { contextBridge, ipcRenderer } from 'electron'
 import { IPC_CHANNELS, RENDERER_EVENTS } from '../shared/types'
 
+const listenerMap = new Map<(...args: any[]) => void, (...args: any[]) => void>()
+
 const api = {
   // --- Core IPC helpers ---
   invoke(channel: string, ...args: any[]): Promise<any> {
@@ -18,15 +20,20 @@ const api = {
 
   on(channel: string, callback: (...args: any[]) => void): () => void {
     const handler = (_event: any, ...args: any[]) => callback(...args)
+    listenerMap.set(callback, handler)
     ipcRenderer.on(channel, handler)
-    // Return cleanup function
     return () => {
       ipcRenderer.removeListener(channel, handler)
+      listenerMap.delete(callback)
     }
   },
 
   off(channel: string, callback: (...args: any[]) => void): void {
-    ipcRenderer.removeListener(channel, callback)
+    const handler = listenerMap.get(callback)
+    if (handler) {
+      ipcRenderer.removeListener(channel, handler)
+      listenerMap.delete(callback)
+    }
   },
 
   getPlatform(): string {

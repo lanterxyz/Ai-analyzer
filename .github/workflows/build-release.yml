@@ -39,9 +39,11 @@ jobs:
         with:
           version: 9
 
-      - name: Use runner Node.js
+      - name: Print versions
         shell: bash
-        run: echo "Runner Node: $(node --version), pnpm: $(pnpm --version)"
+        run: |
+          echo "Node version: $(node --version)"
+          echo "pnpm version: $(pnpm --version)"
 
       - name: Install Linux native deps
         if: matrix.platform == 'linux'

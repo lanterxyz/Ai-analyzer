@@ -1,5 +1,19 @@
 import React, { useState } from 'react'
 
+function base64Encode(str: string): string {
+  const bytes = new TextEncoder().encode(str)
+  let binary = ''
+  bytes.forEach(b => binary += String.fromCharCode(b))
+  return btoa(binary)
+}
+
+function base64Decode(b64: string): string {
+  const binary = atob(b64)
+  const bytes = new Uint8Array(binary.length)
+  for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i)
+  return new TextDecoder().decode(bytes)
+}
+
 const EncodingTool: React.FC = () => {
   const [input, setInput] = useState('')
   const [output, setOutput] = useState('')
@@ -20,8 +34,8 @@ const EncodingTool: React.FC = () => {
     try {
       let result = ''
       switch (operation) {
-        case 'base64Encode': result = btoa(unescape(encodeURIComponent(input))); break
-        case 'base64Decode': result = decodeURIComponent(escape(atob(input))); break
+        case 'base64Encode': result = base64Encode(input); break
+        case 'base64Decode': result = base64Decode(input); break
         case 'urlEncode': result = encodeURIComponent(input); break
         case 'urlDecode': result = decodeURIComponent(input); break
         case 'hexEncode': result = Array.from(input).map(c => c.charCodeAt(0).toString(16).padStart(2, '0')).join(' '); break

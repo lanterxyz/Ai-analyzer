@@ -1,6 +1,8 @@
 // Upstream proxy support (HTTP/HTTPS/SOCKS5)
+import net from 'net'
 import http from 'http'
 import https from 'https'
+import tls from 'tls'
 import { SocksClient } from 'socks'
 import { URL } from 'url'
 import { UpstreamProxyConfig } from '@shared/types'
@@ -14,8 +16,6 @@ export async function createUpstreamConnection(
   useTls: boolean,
   upstream: UpstreamProxyConfig
 ): Promise<net.Socket> {
-  const net = await import('net')
-
   if (upstream.type === 'socks5') {
     logger.debug('Using SOCKS5 upstream', { host: upstream.host, port: upstream.port })
 
@@ -35,8 +35,7 @@ export async function createUpstreamConnection(
     })
 
     if (useTls) {
-      const tlsSocket = await import('tls')
-      return tlsSocket.default.connect({
+      return tls.connect({
         socket: result.socket,
         servername: targetHost
       }) as any
@@ -81,5 +80,3 @@ export async function createUpstreamConnection(
     connectReq.end()
   })
 }
-
-import net from 'net'

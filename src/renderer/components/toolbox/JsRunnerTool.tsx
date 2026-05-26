@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { IPC_CHANNELS } from '@shared/types'
 
 const JsRunnerTool: React.FC = () => {
   const [script, setScript] = useState('console.log("Hello from Ai-analyzer!")')
@@ -6,7 +7,7 @@ const JsRunnerTool: React.FC = () => {
 
   const run = async () => {
     try {
-      const result = await window.electronAPI.invoke('toolbox:jsRun', script)
+      const result = await window.electronAPI.invoke(IPC_CHANNELS.TOOLBOX_JS_RUN, script)
       setOutput(result)
     } catch (err) {
       setOutput(`Error: ${(err as Error).message}`)

@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { IPC_CHANNELS } from '@shared/types'
 
 const AesTool: React.FC = () => {
   const [mode, setMode] = useState<'encrypt' | 'decrypt'>('encrypt')
@@ -11,7 +12,7 @@ const AesTool: React.FC = () => {
   const handleProcess = async () => {
     try {
       const result = await window.electronAPI.invoke(
-        mode === 'encrypt' ? 'toolbox:aesEncrypt' : 'toolbox:aesDecrypt',
+        mode === 'encrypt' ? IPC_CHANNELS.TOOLBOX_AES_ENCRYPT : IPC_CHANNELS.TOOLBOX_AES_DECRYPT,
         { algorithm, key, iv, input }
       )
       setOutput(result)

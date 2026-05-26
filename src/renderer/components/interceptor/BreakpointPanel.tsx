@@ -1,16 +1,15 @@
 import React, { useState } from 'react'
-import { IPC_CHANNELS } from '@shared/types'
+import { IPC_CHANNELS, RENDERER_EVENTS } from '@shared/types'
 
 const BreakpointPanel: React.FC = () => {
   const [hitData, setHitData] = useState<any>(null)
 
-  // Listen for breakpoint hits
   React.useEffect(() => {
     const handler = (_: any, data: any) => {
       setHitData(data)
     }
-    window.electronAPI.on('breakpoint:hit', handler)
-    return () => window.electronAPI.off('breakpoint:hit', handler)
+    const cleanup = window.electronAPI.on(RENDERER_EVENTS.BREAKPOINT_HIT, handler)
+    return cleanup
   }, [])
 
   const continueRequest = () => {

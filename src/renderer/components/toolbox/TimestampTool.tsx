@@ -24,9 +24,17 @@ const TimestampTool: React.FC = () => {
   }
 
   const now = () => {
-    setTimestamp(Math.floor(Date.now() / 1000).toString())
-    setFormat('unix')
-    convert()
+    const ts = Math.floor(Date.now() / 1000).toString()
+    setTimestamp(ts)
+    const date = new Date(parseInt(ts) * 1000)
+    setResult([
+      `UTC: ${date.toUTCString()}`,
+      `Local: ${date.toLocaleString()}`,
+      `ISO: ${date.toISOString()}`,
+      `Unix: ${parseInt(ts)}`,
+      `Unix (ms): ${parseInt(ts) * 1000}`,
+      `Relative: ${timeAgo(date)}`
+    ].join('\n'))
   }
 
   return (

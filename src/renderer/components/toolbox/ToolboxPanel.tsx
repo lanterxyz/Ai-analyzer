@@ -1,19 +1,26 @@
 import React, { useState } from 'react'
+import AesTool from './AesTool'
+import EncodingTool from './EncodingTool'
+import JsRunnerTool from './JsRunnerTool'
+import RegexTester from './RegexTester'
+import TimestampTool from './TimestampTool'
+import WebSocketClient from './WebSocketClient'
+import QrCodeTool from './QrCodeTool'
 
 const ToolboxPanel: React.FC = () => {
   const [activeTool, setActiveTool] = useState('aes')
 
-  const tools = [
-    { key: 'aes', label: 'AES', component: null },
-    { key: 'encoding', label: 'Encode', component: null },
-    { key: 'js', label: 'JS', component: null },
-    { key: 'regex', label: 'Regex', component: null },
-    { key: 'timestamp', label: 'Time', component: null },
-    { key: 'websocket', label: 'WS', component: null },
-    { key: 'qr', label: 'QR', component: null },
-    { key: 'curl', label: 'cURL', component: null },
-    { key: 'har', label: 'HAR', component: null }
+  const tools: { key: string; label: string; component: React.FC }[] = [
+    { key: 'aes', label: 'AES', component: AesTool },
+    { key: 'encoding', label: 'Encode', component: EncodingTool },
+    { key: 'js', label: 'JS', component: JsRunnerTool },
+    { key: 'regex', label: 'Regex', component: RegexTester },
+    { key: 'timestamp', label: 'Time', component: TimestampTool },
+    { key: 'websocket', label: 'WS', component: WebSocketClient },
+    { key: 'qr', label: 'QR', component: QrCodeTool }
   ]
+
+  const ActiveComponent = tools.find(t => t.key === activeTool)?.component
 
   return (
     <div className="toolbox-panel">
@@ -29,7 +36,9 @@ const ToolboxPanel: React.FC = () => {
         ))}
       </div>
       <div className="toolbox-content">
-        <p className="empty-hint">Tool: {activeTool} - select to use</p>
+        {ActiveComponent ? <ActiveComponent /> : (
+          <p className="empty-hint">Tool not available</p>
+        )}
       </div>
     </div>
   )

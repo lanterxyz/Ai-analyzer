@@ -22,7 +22,8 @@ export default function useTabs() {
   }, [])
 
   const createTab = useCallback(async (url?: string) => {
-    const tabId = await window.electronAPI.invoke(IPC_CHANNELS.TAB_CREATE, url)
+    const tabId = `tab-${Date.now()}`
+    await window.electronAPI.invoke(IPC_CHANNELS.TAB_CREATE, tabId, url)
     return tabId
   }, [])
 
